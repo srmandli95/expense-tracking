@@ -39,7 +39,7 @@ pip install pipenv
 pipenv install
 ```
 
-**###3. Run the webservers: **
+### 3. Install WebServers:
 
 ```bash
 pipenv run streamlit run frontend/app.py
