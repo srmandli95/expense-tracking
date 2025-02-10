@@ -6,7 +6,7 @@ It allows users to **add, view, analyze, and delete expenses**, offering a seaml
 ---
 
 ## 📜 Project Structure
-expense-tracker/
+
 │── backend/                # Backend (FastAPI)
 │   ├── __init__.py
 │   ├── db_helper.py        # Database operations
