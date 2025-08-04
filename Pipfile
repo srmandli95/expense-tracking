@@ -12,6 +12,7 @@ python-jose = "*"
 passlib = {extras = ["bcrypt"], version = "*"}
 python-dotenv = "*"
 pydantic = {extras = ["email"], version = "*"}
+pydantic-settings = "*"
 
 [dev-packages]
 pytest = "*"
