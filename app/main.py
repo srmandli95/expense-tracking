@@ -3,11 +3,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.logging_config import setup_logging, get_logger
 from app.middleware.logging import LoggingMiddleware
+from app.routers import auth 
+
 
 setup_logging()
 logger = get_logger("main")
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
+
+
+app.include_router(auth.router)
 
 app.add_middleware(
     CORSMiddleware,
