@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import Settings
+from app.core.config import settings
+from app.core.logging_config import setup_logging, get_logger
 from app.middleware.logging import LoggingMiddleware
 
-settings = Settings()
+setup_logging()
+logger = get_logger("main")
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
@@ -19,11 +21,11 @@ app.add_middleware(LoggingMiddleware)
 
 @app.on_event("startup")
 async def startup_event():
-    print("Application startup")
+    logger.info("Application startup")
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    print("Application shutdown")
+    logger.info("Application shutdown")
 
 @app.get("/health")
 def health_check():
