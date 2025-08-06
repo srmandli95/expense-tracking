@@ -4,6 +4,7 @@ from app.core.config import settings
 from app.core.logging_config import setup_logging, get_logger
 from app.middleware.logging import LoggingMiddleware
 from app.routers import auth 
+from app.database import init_db
 
 
 setup_logging()
@@ -27,6 +28,7 @@ app.add_middleware(LoggingMiddleware)
 @app.on_event("startup")
 async def startup_event():
     logger.info("Application startup")
+    init_db()
 
 @app.on_event("shutdown")
 async def shutdown_event():

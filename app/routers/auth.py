@@ -6,6 +6,7 @@ from app.database import get_session
 from app.core.security import hash_password, verify_password, create_access_token
 from app.core.deps import get_current_user
 
+
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
 @router.post("/register", response_model=UserRead)
