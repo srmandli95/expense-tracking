@@ -4,15 +4,23 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-mysql-connector-python = "*"
-pytest = "*"
-fastapi = {extras = ["standard"], version = "*"}
-uvicorn = "*"
-pydantic = "*"
-streamlit = "*"
-matplotlib = "*"
+pydantic-settings = "*"
+fastapi = "*"
+uvicorn = {extras = ["standard"], version = "*"}
+sqlmodel = "*"
+alembic = "*"
+python-jose = "*"
+passlib = {extras = ["bcrypt"], version = "*"}
+python-dotenv = "*"
+pydantic = {extras = ["email"], version = "*"}
+psycopg2-binary = "*"
 
 [dev-packages]
+pytest = "*"
+httpx = "*"
+black = "*"
+isort = "*"
+flake8 = "*"
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"
