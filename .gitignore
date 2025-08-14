@@ -1,0 +1,50 @@
+# ----------------------
+# Python Bytecode
+# ----------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ----------------------
+# Environment & Packages
+# ----------------------
+.env
+*.env
+.venv/
+venv/
+env/
+Pipfile.lock
+poetry.lock
+
+# ----------------------
+# Data Files (Ignore raw and temp data)
+# ----------------------
+*.csv
+*.parquet
+*.json
+*.xlsx
+data/
+tmp/
+*.log
+
+# ----------------------
+# OS & IDE Specific
+# ----------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# ----------------------
+# Build & Distribution
+# ----------------------
+build/
+dist/
+*.egg-info/
+
+# ----------------------
+# Jupyter Notebook Checkpoints
+# ----------------------
+.ipynb_checkpoints/
