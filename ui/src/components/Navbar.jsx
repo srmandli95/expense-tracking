@@ -10,7 +10,7 @@ export default function Navbar() {
       <div className="flex gap-4">
         <Link to="/register" className="hover:underline">Register</Link>
         <Link to="/login" className="hover:underline">Login</Link>
-        {isAuthenticated() && <Link to="/me" className="hover:underline">Me</Link>}
+       {isAuthenticated() && <Link to="/expenses" className="hover:underline">Expenses</Link>}
       </div>
       {isAuthenticated() && (
         <button onClick={logout} className="bg-red-500 px-3 py-1 rounded hover:bg-red-600">

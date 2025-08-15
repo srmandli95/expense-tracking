@@ -12,7 +12,7 @@ class Expense(SQLModel, table=True):
     currency: str = Field(default="USD", max_length=8)
     category: str = Field(index=True, max_length=50)
     description: Optional[str] = Field(default=None, max_length=255)
-    spend_at: date = Field(index=True) #when the expense was made
+    spent_at: date = Field(index=True) #when the expense was made
 
     created_at: datetime = Field(default_factory=datetime.utcnow, index=True)
     updated_at: datetime = Field(default_factory=datetime.utcnow, index=True)

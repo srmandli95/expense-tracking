@@ -27,7 +27,7 @@ def create_expense(
         currency = payload.currency,
         category = payload.category,
         description = payload.description,
-        spend_at = payload.spend_at
+        spent_at = payload.spent_at
     )
 
     logger.info(f"Creating expense: {expense} by user_id: {current_user.id}")
@@ -57,9 +57,9 @@ def list_expenses(
     query = select(Expense).where(Expense.owner_id == current_user.id)
 
     if date_from:
-        query = query.where(Expense.spend_at >= datetime.fromisoformat(date_from))
+        query = query.where(Expense.spent_at >= datetime.fromisoformat(date_from))
     if date_to:
-        query = query.where(Expense.spend_at <= datetime.fromisoformat(date_to))
+        query = query.where(Expense.spent_at <= datetime.fromisoformat(date_to))
     if category:
         query = query.where(Expense.category == category)
     if min_amount is not None:
@@ -69,7 +69,7 @@ def list_expenses(
     if q:
         query = query.where(or_(Expense.description.ilike(f"%{q}%"), Expense.category.ilike(f"%{q}%")))
 
-    query = query.order_by(Expense.spend_at.desc(), Expense.created_at.desc())
+    query = query.order_by(Expense.spent_at.desc(), Expense.created_at.desc())
 
     logger.info(f"Listing expenses for user_id: {current_user.id}")
     expenses = session.exec(query.offset(offset).limit(limit)).all()
@@ -108,7 +108,7 @@ def replace_expense(
     expense.currency = payload.currency
     expense.category = payload.category
     expense.description = payload.description
-    expense.spend_at = payload.spend_at
+    expense.spent_at = payload.spent_at
     expense.updated_at = datetime.utcnow()
     
     session.add(expense)

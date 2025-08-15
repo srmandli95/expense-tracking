@@ -7,7 +7,7 @@ class ExpenseCreate(BaseModel):
     currency: str = Field(default="USD", max_length=8, description="Currency of the expense")
     category: str = Field(max_length=50, description="Category of the expense")
     description: Optional[str] = Field(default=None, max_length=255, description="Description of the expense")
-    spend_at: date = Field(description="Date when the expense was made")
+    spent_at: date = Field(description="Date when the expense was made")
 
 class ExpenseRead(BaseModel):
     id: int
@@ -16,7 +16,7 @@ class ExpenseRead(BaseModel):
     currency: str
     category: str
     description: Optional[str]
-    spend_at: date
+    spent_at: date
     created_at: datetime
     updated_at: datetime
 
@@ -28,5 +28,5 @@ class ExpenseUpdate(BaseModel):
     currency: Optional[str] = Field(max_length=8, description="Currency of the expense")
     category: Optional[str] = Field(max_length=50, description="Category of the expense")
     description: Optional[str] = Field(max_length=255, description="Description of the expense")
-    spend_at: Optional[date] = Field(description="Date when the expense was made")
+    spent_at: Optional[date] = Field(description="Date when the expense was made")
 
