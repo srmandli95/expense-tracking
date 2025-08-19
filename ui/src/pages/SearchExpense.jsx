@@ -2,7 +2,14 @@ import { useState } from "react";
 import { listExpenses } from "../api/expenses";
 
 export default function SearchExpense() {
-  const [filters, setFilters] = useState({ from: "", to: "", description: "" });
+  const [filters, setFilters] = useState({
+    from: "",
+    to: "",
+    category: "",
+    min_amount: "",
+    max_amount: "",
+    description: "",
+  });
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -14,12 +21,18 @@ export default function SearchExpense() {
   const handleSearch = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Only send non-empty filters
+    const params = {};
+    if (filters.from) params.date_from = filters.from;
+    if (filters.to) params.date_to = filters.to;
+    if (filters.category) params.category = filters.category;
+    if (filters.min_amount) params.min_amount = parseFloat(filters.min_amount);
+    if (filters.max_amount) params.max_amount = parseFloat(filters.max_amount);
+    if (filters.description) params.q = filters.description;
+
     try {
-      const res = await listExpenses({
-        from: filters.from,
-        to: filters.to,
-        description: filters.description,
-      });
+      const res = await listExpenses(params);
       setResults(res.data);
     } catch {
       setResults([]);
@@ -30,7 +43,7 @@ export default function SearchExpense() {
   return (
     <div className="max-w-4xl mx-auto mt-6">
       <h2 className="text-xl font-bold mb-4">Search Expenses</h2>
-      <form className="flex gap-4 mb-6" onSubmit={handleSearch}>
+      <form className="flex flex-wrap gap-4 mb-6" onSubmit={handleSearch}>
         <input
           type="date"
           name="from"
@@ -46,6 +59,34 @@ export default function SearchExpense() {
           onChange={handleChange}
           className="border rounded px-2 py-1"
           placeholder="To"
+        />
+        <input
+          type="text"
+          name="category"
+          value={filters.category}
+          onChange={handleChange}
+          className="border rounded px-2 py-1"
+          placeholder="Category"
+        />
+        <input
+          type="number"
+          name="min_amount"
+          value={filters.min_amount}
+          onChange={handleChange}
+          className="border rounded px-2 py-1"
+          placeholder="Min Amount"
+          min="0"
+          step="0.01"
+        />
+        <input
+          type="number"
+          name="max_amount"
+          value={filters.max_amount}
+          onChange={handleChange}
+          className="border rounded px-2 py-1"
+          placeholder="Max Amount"
+          min="0"
+          step="0.01"
         />
         <input
           type="text"
