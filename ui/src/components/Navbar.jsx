@@ -27,9 +27,17 @@ export default function Navbar() {
             <Link to="/login" className="hover:underline">Login</Link>
           </>
         )}
-        {auth && (
-          <Link to="/expenses" className="hover:underline">Expenses</Link>
-        )}
+{auth && (
+  <>
+    <Link to="/me" className="hover:underline">Home</Link>
+    <Link to="/expenses/create" className="hover:underline">CreateExpense</Link>
+    <Link to="/expenses/update" className="hover:underline">UpdateExpense</Link>
+    <Link to="/expenses/get" className="hover:underline">GetExpense</Link>
+    <Link to="/expenses/delete" className="hover:underline">DeleteExpense</Link>
+    <Link to="/expenses/search" className="hover:underline">SearchExpense</Link>
+  </>
+)}
+
       </div>
       {auth && (
         <button onClick={logout} className="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
