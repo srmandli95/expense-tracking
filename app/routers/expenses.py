@@ -56,20 +56,41 @@ def list_expenses(
 
     query = select(Expense).where(Expense.owner_id == current_user.id)
 
+    # Track if any filter is applied
+    filters_applied = False
     if date_from:
-        query = query.where(Expense.spent_at >= datetime.fromisoformat(date_from))
+        try:
+            query = query.where(Expense.spent_at >= datetime.fromisoformat(date_from))
+            filters_applied = True
+        except Exception:
+            pass
     if date_to:
-        query = query.where(Expense.spent_at <= datetime.fromisoformat(date_to))
-    if category:
-        query = query.where(Expense.category == category)
+        try:
+            query = query.where(Expense.spent_at <= datetime.fromisoformat(date_to))
+            filters_applied = True
+        except Exception:
+            pass
+    if category and category.strip():
+        query = query.where(Expense.category == category.strip())
+        filters_applied = True
     if min_amount is not None:
         query = query.where(Expense.amount >= min_amount)
+        filters_applied = True
     if max_amount is not None:
         query = query.where(Expense.amount <= max_amount)
-    if q:
-        query = query.where(or_(Expense.description.ilike(f"%{q}%"), Expense.category.ilike(f"%{q}%")))
+        filters_applied = True
+    if q and q.strip():
+        query = query.where(or_(
+            Expense.description.ilike(f"%{q.strip()}%"),
+            Expense.category.ilike(f"%{q.strip()}%")
+        ))
+        filters_applied = True
 
     query = query.order_by(Expense.spent_at.desc(), Expense.created_at.desc())
+
+    if not filters_applied:
+        # If no filters are applied, return None
+        return []
 
     logger.info(f"Listing expenses for user_id: {current_user.id}")
     expenses = session.exec(query.offset(offset).limit(limit)).all()
