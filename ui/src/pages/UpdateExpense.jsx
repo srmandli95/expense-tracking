@@ -1,79 +1,74 @@
-import { useEffect, useState } from "react";
-import { listExpenses, updateExpense } from "../api/expenses";
-import ExpenseForm from "../components/ExpenseForm";
+import React, { useEffect, useState } from "react";
+import { getExpense, updateExpense } from "../api/expenses";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function UpdateExpense() {
-  const [items, setItems] = useState([]);
-  const [selected, setSelected] = useState(null);
-  const [message, setMessage] = useState("");
+  const { id } = useParams();
+  const nav = useNavigate();
+  const [form, setForm] = useState({ description: "", amount: "", category: "" });
+  const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchExpense() {
       try {
-        const res = await listExpenses({});
-        setItems(res.data);
-      } catch (e) {
-        setMessage(e?.response?.data?.detail || "Failed to load expenses");
+        const res = await getExpense(id);
+        setForm(res.data);
+      } catch (err) {
+        setMsg("Failed to fetch expense.");
       }
-    };
-    fetchData();
-  }, []);
+    }
+    fetchExpense();
+  }, [id]);
 
-  const handleUpdate = async (data) => {
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
     try {
-      await updateExpense(selected.id, data);
-      setMessage("Expense updated!");
-      setSelected(null);
-    } catch (e) {
-      setMessage(e?.response?.data?.detail || "Update failed");
+      await updateExpense(id, form);
+      setMsg("Expense updated!");
+      setTimeout(() => nav("/get-expenses"), 700);
+    } catch (err) {
+      setMsg("Update failed.");
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-6">
-      <h2 className="text-xl font-bold mb-4">Update Expense</h2>
-      {message && <p className="mb-3 text-sm">{message}</p>}
-      {!selected ? (
-        <table className="min-w-full text-sm border rounded">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="text-left p-2">Date</th>
-              <th className="text-left p-2">Category</th>
-              <th className="text-left p-2">Description</th>
-              <th className="text-right p-2">Amount</th>
-              <th className="text-left p-2">Currency</th>
-              <th className="p-2">Edit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((x) => (
-              <tr key={x.id} className="border-t">
-                <td className="p-2">{x.spent_at}</td>
-                <td className="p-2">{x.category}</td>
-                <td className="p-2">{x.description || "-"}</td>
-                <td className="p-2 text-right">{x.amount.toFixed(2)}</td>
-                <td className="p-2">{x.currency}</td>
-                <td className="p-2">
-                  <button
-                    className="px-2 py-1 border rounded"
-                    onClick={() => setSelected(x)}
-                  >
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <div className="max-w-lg mx-auto mt-6">
-          <ExpenseForm
-            initial={selected}
-            onCancel={() => setSelected(null)}
-            onSave={handleUpdate}
-          />
-        </div>
-      )}
+    <div className="max-w-md mx-auto mt-10">
+      <h1 className="text-2xl font-bold mb-4">Update Expense</h1>
+      <form onSubmit={onSubmit} className="space-y-3">
+        <input
+          className="w-full border p-2 rounded"
+          type="text"
+          name="description"
+          placeholder="Description"
+          value={form.description}
+          onChange={onChange}
+          required
+        />
+        <input
+          className="w-full border p-2 rounded"
+          type="number"
+          name="amount"
+          placeholder="Amount"
+          value={form.amount}
+          onChange={onChange}
+          required
+        />
+        <input
+          className="w-full border p-2 rounded"
+          type="text"
+          name="category"
+          placeholder="Category"
+          value={form.category}
+          onChange={onChange}
+          required
+        />
+        <button className="bg-blue-600 text-white px-4 py-2 rounded w-full">
+          Update Expense
+        </button>
+      </form>
+      {msg && <p className="mt-3 text-sm">{msg}</p>}
     </div>
   );
 }

@@ -22,7 +22,6 @@ export default function SearchExpense() {
     e.preventDefault();
     setLoading(true);
 
-    // Only send non-empty filters
     const params = {};
     if (filters.from) params.date_from = filters.from;
     if (filters.to) params.date_to = filters.to;
@@ -37,12 +36,14 @@ export default function SearchExpense() {
     } catch {
       setResults([]);
     }
+
     setLoading(false);
   };
 
   return (
     <div className="max-w-4xl mx-auto mt-6">
       <h2 className="text-xl font-bold mb-4">Search Expenses</h2>
+
       <form className="flex flex-wrap gap-4 mb-6" onSubmit={handleSearch}>
         <input
           type="date"
@@ -103,9 +104,11 @@ export default function SearchExpense() {
           Search
         </button>
       </form>
+
       <table className="min-w-full text-sm border rounded">
         <thead className="bg-gray-100">
           <tr>
+            <th className="text-left p-2">ID</th>
             <th className="text-left p-2">Date</th>
             <th className="text-left p-2">Category</th>
             <th className="text-left p-2">Description</th>
@@ -115,12 +118,21 @@ export default function SearchExpense() {
         </thead>
         <tbody>
           {loading ? (
-            <tr><td className="p-3" colSpan={5}>Loading…</td></tr>
+            <tr>
+              <td className="p-3" colSpan={6}>
+                Loading…
+              </td>
+            </tr>
           ) : results.length === 0 ? (
-            <tr><td className="p-3" colSpan={5}>No expenses found</td></tr>
+            <tr>
+              <td className="p-3" colSpan={6}>
+                No expenses found
+              </td>
+            </tr>
           ) : (
             results.map((x) => (
               <tr key={x.id} className="border-t">
+                <td className="p-2">{x.id}</td>
                 <td className="p-2">{x.spent_at}</td>
                 <td className="p-2">{x.category}</td>
                 <td className="p-2">{x.description || "-"}</td>

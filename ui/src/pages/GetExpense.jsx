@@ -1,60 +1,75 @@
-import { useEffect, useState } from "react";
-import { listExpenses } from "../api/expenses";
+import React, { useEffect, useState } from "react";
+import { listExpenses, deleteExpense } from "../api/expenses";
+import { useNavigate } from "react-router-dom";
 
-export default function GetExpense() {
-  const [items, setItems] = useState([]);
+export default function GetExpenses() {
+  const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
+  const nav = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
       setLoading(true);
       try {
-        const res = await listExpenses({});
-        setItems(res.data);
-      } catch (e) {
-        setMessage(e?.response?.data?.detail || "Failed to load expenses");
-      } finally {
-        setLoading(false);
+        const res = await listExpenses();
+        setExpenses(res.data);
+      } catch (err) {
+        // handle error
       }
-    };
+      setLoading(false);
+    }
     fetchData();
   }, []);
 
+  const handleEdit = (id) => {
+    nav(`/update-expense/${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    await deleteExpense(id);
+    setExpenses(expenses.filter((e) => e.id !== id));
+  };
+
   return (
-    <div className="max-w-4xl mx-auto mt-6">
-      <h2 className="text-xl font-bold mb-4">All Expenses</h2>
-      {message && <p className="mb-3 text-sm">{message}</p>}
-      <div className="overflow-x-auto border rounded">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-100">
+    <div className="max-w-4xl mx-auto mt-10">
+      <h1 className="text-2xl font-bold mb-4">Expenses</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table className="w-full border-collapse border border-gray-300">
+          <thead>
             <tr>
-              <th className="text-left p-2">Date</th>
-              <th className="text-left p-2">Category</th>
-              <th className="text-left p-2">Description</th>
-              <th className="text-right p-2">Amount</th>
-              <th className="text-left p-2">Currency</th>
+              <th className="border p-2">Description</th>
+              <th className="border p-2">Amount</th>
+              <th className="border p-2">Category</th>
+              <th className="border p-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <tr><td className="p-3" colSpan={5}>Loading…</td></tr>
-            ) : items.length === 0 ? (
-              <tr><td className="p-3" colSpan={5}>No expenses found</td></tr>
-            ) : (
-              items.map((x) => (
-                <tr key={x.id} className="border-t">
-                  <td className="p-2">{x.spent_at}</td>
-                  <td className="p-2">{x.category}</td>
-                  <td className="p-2">{x.description || "-"}</td>
-                  <td className="p-2 text-right">{x.amount.toFixed(2)}</td>
-                  <td className="p-2">{x.currency}</td>
-                </tr>
-              ))
-            )}
+            {expenses.map((expense) => (
+              <tr key={expense.id}>
+                <td className="border p-2">{expense.description}</td>
+                <td className="border p-2">{expense.amount}</td>
+                <td className="border p-2">{expense.category}</td>
+                <td className="border p-2">
+                  <button
+                    className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+                    onClick={() => handleEdit(expense.id)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="bg-red-600 text-white px-2 py-1 rounded"
+                    onClick={() => handleDelete(expense.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
-      </div>
+      )}
     </div>
   );
 }
