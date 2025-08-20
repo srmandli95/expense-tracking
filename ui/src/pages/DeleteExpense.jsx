@@ -1,69 +1,57 @@
-import { useEffect, useState } from "react";
-import { listExpenses, deleteExpense } from "../api/expenses";
+import { useState } from "react";
+import { deleteExpense } from "../api/expenses";
 
-export default function DeleteExpense() {
-  const [items, setItems] = useState([]);
-  const [message, setMessage] = useState("");
+export default function DeleteExpenseSimple() {
+  const [id, setId] = useState("");
+  const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const fetchData = async () => {
-    try {
-      const res = await listExpenses({});
-      setItems(res.data);
-    } catch (e) {
-      setMessage(e?.response?.data?.detail || "Failed to load expenses");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const trimmed = id.trim();
+    if (!trimmed) {
+      setMsg("Please enter an ID to delete.");
+      return;
     }
-  };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this expense?")) return;
     try {
-      await deleteExpense(id);
-      setMessage("Expense deleted!");
-      fetchData();
+      setLoading(true);
+      await deleteExpense(trimmed);
+      setMsg(`✅ Expense ${trimmed} deleted.`);
+      setId(""); // clear the input after success
     } catch (e) {
-      setMessage(e?.response?.data?.detail || "Delete failed");
+      setMsg(e?.response?.data?.detail || "❌ Delete failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-6">
+    <div className="max-w-md mx-auto mt-10">
       <h2 className="text-xl font-bold mb-4">Delete Expense</h2>
-      {message && <p className="mb-3 text-sm">{message}</p>}
-      <table className="min-w-full text-sm border rounded">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="text-left p-2">Date</th>
-            <th className="text-left p-2">Category</th>
-            <th className="text-left p-2">Description</th>
-            <th className="text-right p-2">Amount</th>
-            <th className="text-left p-2">Currency</th>
-            <th className="p-2">Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((x) => (
-            <tr key={x.id} className="border-t">
-              <td className="p-2">{x.spent_at}</td>
-              <td className="p-2">{x.category}</td>
-              <td className="p-2">{x.description || "-"}</td>
-              <td className="p-2 text-right">{x.amount.toFixed(2)}</td>
-              <td className="p-2">{x.currency}</td>
-              <td className="p-2">
-                <button
-                  className="px-2 py-1 border rounded text-red-600"
-                  onClick={() => handleDelete(x.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <input
+          className="w-full border p-2 rounded"
+          type="text"
+          placeholder="Enter Expense ID (Order ID)"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          disabled={loading}
+        />
+
+        <button
+          type="submit"
+          className={`bg-red-600 text-white px-4 py-2 rounded w-full ${
+            loading ? "opacity-70 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
+        >
+          {loading ? "Deleting..." : "Delete"}
+        </button>
+      </form>
+
+      {msg && <p className="mt-3 text-sm">{msg}</p>}
     </div>
   );
 }
