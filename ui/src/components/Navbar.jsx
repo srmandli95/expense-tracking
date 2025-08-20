@@ -19,31 +19,34 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gray-800 text-white p-4 flex justify-between">
-      <div className="flex gap-4">
-        {!auth && (
-          <>
-            <Link to="/register" className="hover:underline">Register</Link>
-            <Link to="/login" className="hover:underline">Login</Link>
-          </>
-        )}
-{auth && (
-  <>
-    <Link to="/me" className="hover:underline">Home</Link>
-    <Link to="/expenses/create" className="hover:underline">CreateExpense</Link>
-    <Link to="/expenses/update" className="hover:underline">UpdateExpense</Link>
-    <Link to="/expenses/get" className="hover:underline">GetExpense</Link>
-    <Link to="/expenses/delete" className="hover:underline">DeleteExpense</Link>
-    <Link to="/expenses/search" className="hover:underline">SearchExpense</Link>
-  </>
-)}
+    <header className="sticky top-0 z-40 bg-gray-900 text-white shadow">
+      <nav className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="flex gap-4 items-center">
+          {!auth ? (
+            <>
+              <Link to="/register" className="hover:underline">
+                Register
+              </Link>
+              <Link to="/login" className="hover:underline">
+                Login
+              </Link>
+            </>
+          ) : (
+            <Link to="/me" className="hover:underline font-medium">
+              Home
+            </Link>
+          )}
+        </div>
 
-      </div>
-      {auth && (
-        <button onClick={logout} className="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
-          Logout
-        </button>
-      )}
-    </nav>
+        {auth && (
+          <button
+            onClick={logout}
+            className="bg-red-500 px-3 py-1.5 rounded hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
+        )}
+      </nav>
+    </header>
   );
 }
