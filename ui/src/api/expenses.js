@@ -1,19 +1,13 @@
-import API from "./auth"; // <- this is the axios instance we made earlier (baseURL + token)
+import API from "./auth";
 
-export const listExpenses = (params = {}) =>
-  API.get("/expenses", { params });
+export const listExpenses   = (params = {}) => API.get("/expenses", { params });
+export const getExpense     = (id) => API.get(`/expenses/${id}`);
+export const updateExpense  = (id, data) => API.patch(`/expenses/${id}`, data);
+export const replaceExpense = (id, data) => API.put(`/expenses/${id}`, data);
+export const deleteExpense  = (id) => API.delete(`/expenses/${id}`);
 
-export const getExpense = (id) =>
-  API.get(`/expenses/${id}`);
-
-export const createExpense = (data) =>
-  API.post("/expenses", data);
-
-export const updateExpense = (id, data) =>
-  API.patch(`/expenses/${id}`, data); // partial updates
-
-export const replaceExpense = (id, data) =>
-  API.put(`/expenses/${id}`, data); // full replace
-
-export const deleteExpense = (id) =>
-  API.delete(`/expenses/${id}`);
+// ✅ ALWAYS send a list
+export const createExpense = (dataOrArray) => {
+  const body = Array.isArray(dataOrArray) ? dataOrArray : [dataOrArray];
+  return API.post("/expenses", body);
+};

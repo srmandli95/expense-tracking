@@ -15,27 +15,37 @@ from app.schemas.expense import ExpenseCreate, ExpenseRead, ExpenseUpdate
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 logger = get_logger("expenses")
 
-@router.post("", response_model=ExpenseRead, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=List[ExpenseRead], status_code=status.HTTP_201_CREATED)
 def create_expense(
-    payload: ExpenseCreate,
+    payload: List[ExpenseCreate],  # <-- now expects a list of expenses
     session: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
-    expense = Expense(
-        owner_id = current_user.id,
-        amount = payload.amount,
-        currency = payload.currency,
-        category = payload.category,
-        description = payload.description,
-        spent_at = payload.spent_at
-    )
+    expenses = [
+        Expense(
+            owner_id=current_user.id,
+            amount=item.amount,
+            currency=item.currency,
+            category=item.category,
+            description=item.description,
+            spent_at=item.spent_at,
+        )
+        for item in payload
+    ]
 
-    logger.info(f"Creating expense: {expense} by user_id: {current_user.id}")
-    session.add(expense)
-    session.commit()
-    session.refresh(expense)
-    logger.info(f"Expense created with id: {expense.id} by user_id: {current_user.id}")
-    return expense
+    logger.info(f"Creating {len(expenses)} expenses for user_id: {current_user.id}")
+
+    try:
+        session.add_all(expenses)
+        session.commit()
+        for e in expenses:
+            session.refresh(e)
+        logger.info(f"Created {len(expenses)} expenses for user_id: {current_user.id}")
+        return expenses
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Expense list create failed")
+        
 
 
 @router.get("", response_model=List[ExpenseRead])
