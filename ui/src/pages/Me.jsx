@@ -167,7 +167,7 @@ export default function Me() {
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
                   Quick actions
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                   <Link
                     to="/expenses/create"
                     className="group rounded-xl border bg-white p-4 hover:shadow-sm transition"
@@ -217,6 +217,20 @@ export default function Me() {
                     <div className="mt-2 text-sm font-medium">Delete</div>
                     <div className="text-xs text-gray-500">
                       Remove by ID
+                    </div>
+                  </Link>
+
+                  {/* NEW: Summary tile */}
+                  <Link
+                    to="/analytics/summary"
+                    className="group rounded-xl border bg-white p-4 hover:shadow-sm transition"
+                  >
+                    <div className="text-2xl group-hover:scale-105 transition">
+                      📈
+                    </div>
+                    <div className="mt-2 text-sm font-medium">Summary</div>
+                    <div className="text-xs text-gray-500">
+                      Totals by category
                     </div>
                   </Link>
                 </div>
