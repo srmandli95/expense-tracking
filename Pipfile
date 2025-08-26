@@ -14,6 +14,10 @@ passlib = {extras = ["bcrypt"], version = "*"}
 python-dotenv = "*"
 pydantic = {extras = ["email"], version = "*"}
 psycopg2-binary = "*"
+pytest = "*"
+pytest-asyncio = "*"
+anyio = "*"
+httpx = "*"
 
 [dev-packages]
 pytest = "*"
