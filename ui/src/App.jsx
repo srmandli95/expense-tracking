@@ -9,6 +9,10 @@ import CreateExpense from "./pages/CreateExpense";
 import UpdateExpense from "./pages/UpdateExpense";
 import DeleteExpense from "./pages/DeleteExpense";
 import SearchExpense from "./pages/SearchExpense";
+import ExpenseForm from "./components/ExpenseForm";
+import ExpenseSummary from "./pages/ExpenseSummary";
+
+
 
 function AppContent() {
   const location = useLocation();
@@ -23,10 +27,12 @@ function AppContent() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/me" element={<ProtectedRoute><Me /></ProtectedRoute>} />
+          <Route path="/analytics/summary" element={<ProtectedRoute><ExpenseSummary /></ProtectedRoute>} />
           <Route path="/expenses/create" element={<CreateExpense />} />
           <Route path="/expenses/update" element={<UpdateExpense />} />
           <Route path="/expenses/delete" element={<DeleteExpense />} />
           <Route path="/expenses/search" element={<SearchExpense />} />
+          <Route path="/expenses/form" element={<ExpenseForm />} />
           <Route path="*" element={<Login />} />
         </Routes>
       </div>
