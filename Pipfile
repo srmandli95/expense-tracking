@@ -10,7 +10,7 @@ uvicorn = {extras = ["standard"], version = "*"}
 sqlmodel = "*"
 alembic = "*"
 python-jose = "*"
-passlib = {extras = ["bcrypt"], version = "*"}
+passlib = {extras = ["bcrypt"], version = "4.3.0"}
 python-dotenv = "*"
 pydantic = {extras = ["email"], version = "*"}
 psycopg2-binary = "*"
